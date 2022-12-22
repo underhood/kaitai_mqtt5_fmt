@@ -2,6 +2,7 @@ meta:
   id: mqtt5
   file-extension: bin
   bit-endian: be
+  endian: be
 
 seq:
   - id: mqtt_message
@@ -87,7 +88,28 @@ types:
        valid:
          expr: '_.val == 0'
 
+# Basic MQTT Datatypes
+  mqtt_bin_data:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901012 [MQTT-1.5.6]
+    -orig-id: Binary Data
+    seq:
+      - id: len
+        type: u2
+      - id: data
+        size: len
+  mqtt_utf8_string:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901010 [MQTT-1.5.4]
+    -orig-id: UTF-8 Encoded String
+    seq:
+      - id: len
+        type: u2
+      - id: str
+        type: str
+        size: len
+        encoding: UTF-8
   mqtt_varint:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901011 [MQTT-1.5.5]
+    -orig-id: Variable Byte Integer
     seq:
       - id: bytes
         type: u1
