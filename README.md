@@ -8,7 +8,7 @@ Use Kaitai compiler (`kaitai-struct-compiler`) to produce parsers for your desir
 
 Use [Kaitai visualizer](https://github.com/kaitai-io/kaitai_struct_visualizer/) `ksv` to analyse MQTT5 packets (for example captured by wireshark) visually in hex editor. Example:
 ```
-ksv data_samples/pingreq_valid src/mqtt5.ksy
+ksv data_samples/connect_valid_1 src/mqtt5.ksy
 ```
 
 For installation of `kaitai-struct-compiler` and `ksv` instructions please follow [Kaitai](http://kaitai.io/) project documentation.
