@@ -42,6 +42,7 @@ types:
           cases:
             mqtt_cpt_enum::pingreq: mqtt_pingreq
             mqtt_cpt_enum::pingresp: mqtt_pingresp
+            mqtt_cpt_enum::connect: mqtt_connect
     instances:
       # I do this because first 4 bits are signifying packet type and second 4 bits are packet type dependent
       # when I try to do sth. like:
@@ -87,6 +88,118 @@ types:
        type: mqtt_varint
        valid:
          expr: '_.val == 0'
+
+# MQTT Connect
+  connect_flags:
+    seq:
+      - id: user_name
+        type: b1
+      - id: password
+        type: b1
+      - id: will_retain
+        type: b1
+      - id: will_qos
+        type: b2
+        valid:
+          expr: '_ <= 2'
+      - id: will
+        type: b1
+      - id: clean_start
+        type: b1
+      - id: reserved
+        type: b1
+        valid:
+          expr: '_ == false'
+  mqtt_connect_variable_hdr:
+    seq:
+      - id: protocol_name
+        contents: [ 0x00, 0x03, M, Q, T, T ]
+      - id: protocol_version
+        contents: [ 0x05 ]
+      - id: connect_flags
+        type: connect_flags
+      - id: keep_alive
+        type: u2
+      - id: properties_len
+        type: mqtt_varint
+      - id: properties
+        type: mqtt_properties
+        size: properties_len.val
+        valid:
+          expr: '_._io.eof'
+  mqtt_will_data:
+    seq:
+      - id: will_prop_len
+        type: mqtt_varint
+      - id: will_props
+        type: mqtt_properties
+        size: will_prop_len.val
+        if: will_prop_len.val > 0
+        valid:
+          expr: '_._io.eof'
+      - id: will_topic
+        type: mqtt_utf8_string
+      - id: will_payload
+        type: mqtt_bin_data
+  mqtt_connect_payload:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901058 [MQTT-3.1.3]
+    seq:
+      - id: client_id
+        type: mqtt_utf8_string
+      - id: will_data
+        type: mqtt_will_data
+        if: _parent.var_hdr.connect_flags.will
+      - id: user_name
+        type: mqtt_utf8_string
+        if: _parent.var_hdr.connect_flags.user_name
+      - id: password
+        type: mqtt_bin_data
+        if: _parent.var_hdr.connect_flags.password
+  mqtt_connect_fixed_hdr:
+    seq:
+      - id: cpt
+        type: b4
+        valid:
+          expr: '_ == mqtt_cpt_enum::connect'
+        enum: mqtt_cpt_enum
+      - id: reserved
+        type: b4
+        valid:
+          expr: '_ == 0'
+      - id: rem_length
+        type: mqtt_varint
+        valid:
+          expr: '_.val != 0'
+  mqtt_connect_body:
+    seq:
+      - id: var_hdr
+        type: mqtt_connect_variable_hdr
+      - id: payload
+        type: mqtt_connect_payload
+  mqtt_connect:
+    seq:
+      - id: fixed_hdr
+        type: mqtt_connect_fixed_hdr
+      - id: body
+        type: mqtt_connect_body
+        size: fixed_hdr.rem_length.val
+        valid:
+          expr: '_._io.eof'
+
+  mqtt_property:
+    seq:
+      - id: id
+        type: u1
+      - id: val
+        type:
+          switch-on: id
+          cases:
+            0x22: u2
+  mqtt_properties:
+    seq:
+      - id: properties
+        type: mqtt_property
+        repeat: eos
 
 # Basic MQTT Datatypes
   mqtt_bin_data:
