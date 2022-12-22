@@ -1,6 +1,6 @@
 require 'kaitai/struct/struct'
 
-require_relative '../mqtt5.rb'
+require_relative '../build/mqtt5.rb'
 
 require "test/unit"
 
