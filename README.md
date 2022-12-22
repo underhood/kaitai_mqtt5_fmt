@@ -1,4 +1,4 @@
-# Kaitai MQTT5 protocol
+# Kaitai MQTT5 protocol ![tests](https://github.com/underhood/kaitai_mqtt5_fmt/actions/workflows/run-tests.yaml/badge.svg)
 
 Aims to create MQTT5 protocol parser using [Kaitai](http://kaitai.io/).
 
