@@ -65,7 +65,7 @@ types:
         type: b4
         valid:
           expr: '_ == 0xC' # for some reason cannot use contents with b4 type
-      - id: flags
+      - id: reserved
         type: b4
         valid:
           expr: '_ == 0'
@@ -79,7 +79,7 @@ types:
        type: b4
        valid:
          expr: '_ == 0xD' # for some reason cannot use contents with b4 type
-     - id: flags
+     - id: reserved
        type: b4
        valid:
          expr: '_ == 0'
