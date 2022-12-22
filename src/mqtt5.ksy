@@ -93,19 +93,19 @@ types:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901012 [MQTT-1.5.6]
     -orig-id: Binary Data
     seq:
-      - id: len
+      - id: len_data
         type: u2
       - id: data
-        size: len
+        size: len_data
   mqtt_utf8_string:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901010 [MQTT-1.5.4]
     -orig-id: UTF-8 Encoded String
     seq:
-      - id: len
+      - id: len_str
         type: u2
       - id: str
         type: str
-        size: len
+        size: len_str
         encoding: UTF-8
   mqtt_varint:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901011 [MQTT-1.5.5]
