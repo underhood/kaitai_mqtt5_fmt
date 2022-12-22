@@ -1,0 +1,17 @@
+name: run-tests
+on:
+  push:
+  schedule:
+      - cron: '5 3 * * 0'
+  pull_request:
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt-get install -y ruby
+      - run: sudo gem install test-unit kaitai-struct
+      - run: curl -LO https://github.com/kaitai-io/kaitai_struct_compiler/releases/download/0.10/kaitai-struct-compiler_0.10_all.deb
+      - run: sudo apt-get install ./kaitai-struct-compiler_0.10_all.deb
+      - run: make
+      - run: ruby tests/test.rb
