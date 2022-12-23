@@ -76,3 +76,23 @@ class TestMqttPingParsers < Test::Unit::TestCase
     assert_raise( Kaitai::Struct::ValidationNotEqualError ) { Mqtt5::MqttPingresp.new(Kaitai::Struct::Stream.new(ping_valid)) }
   end
 end
+
+class TestMqttConnectParser < Test::Unit::TestCase
+  def test_ConnectParser1
+    connect = Mqtt5::MqttConnect.from_file('data_samples/connect_valid_1')
+    assert_equal(connect.fixed_hdr.cpt, :mqtt_cpt_enum_connect)
+
+    connect = Mqtt5::MqttConnect.from_file('data_samples/connect_minimal')
+    assert_equal(connect.fixed_hdr.cpt, :mqtt_cpt_enum_connect)
+    assert_equal(connect.body.var_hdr.protocol_version, 5)
+
+    assert_raise(Kaitai::Struct::ValidationGreaterThanError) {
+      # will flag set but will qos == 3
+      connect = Mqtt5::MqttConnect.from_file('data_samples/connect_qos_violate')
+    }
+    assert_raise(Kaitai::Struct::ValidationExprError) {
+      # will flag not set but will qos != 0
+      connect = Mqtt5::MqttConnect.from_file('data_samples/connect_qos_violate2')
+    }
+  end
+end
