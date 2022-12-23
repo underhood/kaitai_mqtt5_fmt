@@ -79,6 +79,11 @@ end
 
 class TestMqttConnectParser < Test::Unit::TestCase
   def test_ConnectParser1
+    assert_nothing_raised {
+      connect = Mqtt5::MqttMsg.from_file('data_samples/connect_minimal')
+      assert_equal(:mqtt_cpt_enum_connect, connect.mqtt_cpt.cpt)
+    }
+
     connect = Mqtt5::MqttConnect.from_file('data_samples/connect_minimal')
     assert_equal(:mqtt_cpt_enum_connect, connect.fixed_hdr.cpt)
     assert_equal(5, connect.body.var_hdr.protocol_version)
