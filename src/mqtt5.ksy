@@ -62,7 +62,7 @@ types:
 
   mqtt_pingreq:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901195 [MQTT-3.12]
-    -orig-id: Ping Request
+    -orig-id: PINGREQ – PING request
     seq:
       - id: cpt
         type: b4
@@ -83,19 +83,27 @@ types:
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
         -orig-id: PINGREQ Fixed Header
   mqtt_pingresp:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901200 [MQTT-3.13]
+    -orig-id: PINGRESP – PING response
     seq:
-     - id: cpt
-       type: b4
-       valid:
-         eq: 0xD
-     - id: reserved
-       type: b4
-       valid:
-         eq: 0
-     - id: rem_length
-       type: mqtt_varint
-       valid:
-         expr: '_.val == 0'
+      - id: cpt
+        type: b4
+        valid:
+          eq: 0xD
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901201 [MQTT-3.13.1]
+        -orig-id: PINGRESP Fixed Header
+      - id: reserved
+        type: b4
+        valid:
+          eq: 0
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901201 [MQTT-3.13.1]
+        -orig-id: PINGRESP Fixed Header
+      - id: rem_length
+        type: mqtt_varint
+        valid:
+          expr: '_.val == 0'
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901201 [MQTT-3.13.1]
+        -orig-id: PINGRESP Fixed Header
 
 # MQTT Connect
   connect_flags:
