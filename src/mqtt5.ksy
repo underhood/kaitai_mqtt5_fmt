@@ -133,7 +133,9 @@ types:
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901036 [MQTT-3.1.2.1]
         -orig-id: Protocol Name
       - id: protocol_version
-        contents: [ 0x05 ]
+        type: u1
+        valid:
+          eq: 0x05
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901037 [MQTT-3.1.2.2]
         -orig-id: Protocol Version
       - id: connect_flags
