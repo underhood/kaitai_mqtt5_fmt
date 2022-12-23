@@ -43,6 +43,7 @@ types:
             mqtt_cpt_enum::pingreq: mqtt_pingreq
             mqtt_cpt_enum::pingresp: mqtt_pingresp
             mqtt_cpt_enum::connect: mqtt_connect
+            mqtt_cpt_enum::connack: mqtt_connack
     instances:
       # I do this because first 4 bits are signifying packet type and second 4 bits are packet type dependent
       # when I try to do sth. like:
@@ -245,6 +246,59 @@ types:
         size: fixed_hdr.rem_length.val
         valid:
           expr: '_._io.eof'
+
+  mqtt_connack_fixed_hdr:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901075 [MQTT-3.2.1]
+    -orig-id: CONNACK Fixed Header
+    seq:
+      - id: cpt
+        type: b4
+        valid:
+          eq: 0x2
+      - id: reserved
+        type: b4
+        valid:
+          eq: 0
+      - id: rem_length
+        type: mqtt_varint
+  mqtt_connack_body:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901076 [MQTT-3.2.2]
+    -orig-id: CONNACK Variable Header
+    seq:
+      - id: reserved
+        type: b7
+        valid:
+          eq: 0
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901077 [MQTT-3.2.2.1]
+        -orig-id: Connect Acknowledge Flags
+      - id: session_present
+        type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901078 [MQTT-3.2.2.1.1]
+        -orig-id: Session Present
+      - id: reason_code
+        type: u1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901079 [MQTT-3.2.2.2]
+        -orig-id: Connect Reason Code
+      - id: property_len
+        type: mqtt_varint
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901081 [MQTT-3.2.2.3.1]
+        -orig-id: Property Length
+      - id: properties
+        type: mqtt_properties
+        size: property_len.val
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901080 [MQTT-3.2.2.3]
+        -orig-id: CONNACK Properties
+  mqtt_connack:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901074 [MQTT-3.2]
+    -orig-id: CONNACK – Connect acknowledgement
+    seq:
+      - id: fixed_hdr
+        type: mqtt_connack_fixed_hdr
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901075 [MQTT-3.2.1]
+        -orig-id: CONNACK Fixed Header
+      - id: body
+        type: mqtt_connack_body
+        size: fixed_hdr.rem_length.val
 
   mqtt_property:
     seq:
