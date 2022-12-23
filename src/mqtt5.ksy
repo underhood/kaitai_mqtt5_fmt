@@ -114,6 +114,9 @@ types:
         -orig-id: Will QoS
       - id: will
         type: b1
+        valid:
+          expr: '_ or (_ == false and will_qos == 0)'
+#          -expr-ref: [MQTT-3.1.2-11] and [MQTT-3.1.2-12]
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901040 [MQTT-3.1.2.5]
         -orig-id: Will Flag
       - id: clean_start
