@@ -79,12 +79,30 @@ end
 
 class TestMqttConnectParser < Test::Unit::TestCase
   def test_ConnectParser1
-    connect = Mqtt5::MqttConnect.from_file('data_samples/connect_valid_1')
-    assert_equal(connect.fixed_hdr.cpt, :mqtt_cpt_enum_connect)
-
     connect = Mqtt5::MqttConnect.from_file('data_samples/connect_minimal')
-    assert_equal(connect.fixed_hdr.cpt, :mqtt_cpt_enum_connect)
+    assert_equal(:mqtt_cpt_enum_connect, connect.fixed_hdr.cpt)
+    assert_equal(5, connect.body.var_hdr.protocol_version)
+    assert_equal("\x00\x03MQTT", connect.body.var_hdr.protocol_name)
+
+    connect = Mqtt5::MqttConnect.from_file('data_samples/connect_valid_1')
+    assert_equal(:mqtt_cpt_enum_connect, connect.fixed_hdr.cpt)
     assert_equal(connect.body.var_hdr.protocol_version, 5)
+    assert_equal("\x00\x03MQTT", connect.body.var_hdr.protocol_name)
+    assert_equal(5, connect.body.var_hdr.keep_alive)
+
+    assert_equal(3, connect.body.payload.user_name.len_str)
+    assert_equal("usr", connect.body.payload.user_name.str)
+    assert_equal(3, connect.body.payload.password.len_data)
+    assert_equal("pwd", connect.body.payload.password.data)
+
+    assert_equal(4, connect.body.payload.client_id.len_str)
+    assert_equal("test", connect.body.payload.client_id.str)
+
+    assert_equal(10, connect.body.payload.will_data.will_topic.len_str)
+    assert_equal("will_topic", connect.body.payload.will_data.will_topic.str)
+    assert_equal(12, connect.body.payload.will_data.will_payload.len_data)
+    assert_equal("will_payload", connect.body.payload.will_data.will_payload.data)
+    
 
     assert_raise(Kaitai::Struct::ValidationGreaterThanError) {
       # will flag set but will qos == 3
@@ -93,6 +111,14 @@ class TestMqttConnectParser < Test::Unit::TestCase
     assert_raise(Kaitai::Struct::ValidationExprError) {
       # will flag not set but will qos != 0
       connect = Mqtt5::MqttConnect.from_file('data_samples/connect_qos_violate2')
+    }
+    assert_raise(EOFError) {
+      # remaining length of fixed header too long data not present
+      connect = Mqtt5::MqttConnect.from_file('data_samples/connect_remlength_toobig')
+    }
+    assert_raise(Kaitai::Struct::ValidationExprError) {
+      # remaining length of fixed header too long data present after the packet
+      connect = Mqtt5::MqttConnect.from_file('data_samples/connect_remlength_toobig_data_present')
     }
   end
 end
