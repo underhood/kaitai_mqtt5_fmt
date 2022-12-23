@@ -61,19 +61,27 @@ types:
         size: 1
 
   mqtt_pingreq:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901195 [MQTT-3.12]
+    -orig-id: Ping Request
     seq:
       - id: cpt
         type: b4
         valid:
           eq: 0xC
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
+        -orig-id: PINGREQ Fixed Header
       - id: reserved
         type: b4
         valid:
           eq: 0
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
+        -orig-id: PINGREQ Fixed Header
       - id: rem_length
         type: mqtt_varint
         valid:
           expr: '_.val == 0'
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
+        -orig-id: PINGREQ Fixed Header
   mqtt_pingresp:
     seq:
      - id: cpt
