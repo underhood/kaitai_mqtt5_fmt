@@ -53,7 +53,7 @@ class TestMqttPingParsers < Test::Unit::TestCase
 
     assert_raise( EOFError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(ping_no_len)) }
     assert_raise( Kaitai::Struct::ValidationExprError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(ping_with_len)) }
-    assert_raise( Kaitai::Struct::ValidationExprError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(ping_with_flags)) }
+    assert_raise( Kaitai::Struct::ValidationNotEqualError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(ping_with_flags)) }
 
     assert_nothing_raised { ping = Mqtt5::MqttMsg.from_file('data_samples/pingreq_valid') }
     ping = Mqtt5::MqttMsg.from_file('data_samples/pingreq_valid')
@@ -68,11 +68,11 @@ class TestMqttPingParsers < Test::Unit::TestCase
 
     assert_raise( EOFError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_no_len)) }
     assert_raise( Kaitai::Struct::ValidationExprError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_with_len)) }
-    assert_raise( Kaitai::Struct::ValidationExprError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_with_flags)) }
+    assert_raise( Kaitai::Struct::ValidationNotEqualError ) { Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_with_flags)) }
 
     assert_nothing_raised { pingresp = Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_valid)) }
     pingresp = Mqtt5::MqttMsg.new(Kaitai::Struct::Stream.new(pingresp_valid))
     assert_equal(pingresp.mqtt_cpt.cpt, :mqtt_cpt_enum_pingresp)
-    assert_raise( Kaitai::Struct::ValidationExprError ) { Mqtt5::MqttPingresp.new(Kaitai::Struct::Stream.new(ping_valid)) }
+    assert_raise( Kaitai::Struct::ValidationNotEqualError ) { Mqtt5::MqttPingresp.new(Kaitai::Struct::Stream.new(ping_valid)) }
   end
 end

@@ -65,11 +65,11 @@ types:
       - id: cpt
         type: b4
         valid:
-          expr: '_ == 0xC' # for some reason cannot use contents with b4 type
+          eq: 0xC
       - id: reserved
         type: b4
         valid:
-          expr: '_ == 0'
+          eq: 0
       - id: rem_length
         type: mqtt_varint
         valid:
@@ -79,11 +79,11 @@ types:
      - id: cpt
        type: b4
        valid:
-         expr: '_ == 0xD' # for some reason cannot use contents with b4 type
+         eq: 0xD
      - id: reserved
        type: b4
        valid:
-         expr: '_ == 0'
+         eq: 0
      - id: rem_length
        type: mqtt_varint
        valid:
@@ -109,7 +109,7 @@ types:
       - id: will_qos
         type: b2
         valid:
-          expr: '_ <= 2'
+          max: 2
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041 [MQTT-3.1.2.6]
         -orig-id: Will QoS
       - id: will
@@ -123,7 +123,7 @@ types:
       - id: reserved
         type: b1
         valid:
-          expr: '_ == false'
+          eq: false
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901038 [MQTT-2.1.2-3]
         -orig-id: Reserved
   mqtt_connect_variable_hdr:
@@ -201,12 +201,12 @@ types:
       - id: cpt
         type: b4
         valid:
-          expr: '_ == mqtt_cpt_enum::connect'
+          eq: mqtt_cpt_enum::connect
         enum: mqtt_cpt_enum
       - id: reserved
         type: b4
         valid:
-          expr: '_ == 0'
+          eq: 0
       - id: rem_length
         type: mqtt_varint
         valid:
