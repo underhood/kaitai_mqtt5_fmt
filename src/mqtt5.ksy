@@ -91,37 +91,63 @@ types:
 
 # MQTT Connect
   connect_flags:
+    doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901038 [MQTT-3.1.2.3]
+    -orig-id: Connect Flags
     seq:
       - id: user_name
         type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901043 [MQTT-3.1.2.8]
+        -orig-id: User Name Flag
       - id: password
         type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901044 [MQTT-3.1.2.9]
+        -orig-id: Password Flag
       - id: will_retain
         type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042 [MQTT-3.1.2.7]
+        -orig-id: Will Retain
       - id: will_qos
         type: b2
         valid:
           expr: '_ <= 2'
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041 [MQTT-3.1.2.6]
+        -orig-id: Will QoS
       - id: will
         type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901040 [MQTT-3.1.2.5]
+        -orig-id: Will Flag
       - id: clean_start
         type: b1
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039 [MQTT-3.1.2.4]
+        -orig-id: Clean Start
       - id: reserved
         type: b1
         valid:
           expr: '_ == false'
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901038 [MQTT-2.1.2-3]
+        -orig-id: Reserved
   mqtt_connect_variable_hdr:
     seq:
       - id: protocol_name
         contents: [ 0x00, 0x03, M, Q, T, T ]
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901036 [MQTT-3.1.2.1]
+        -orig-id: Protocol Name
       - id: protocol_version
         contents: [ 0x05 ]
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901037 [MQTT-3.1.2.2]
+        -orig-id: Protocol Version
       - id: connect_flags
         type: connect_flags
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901038 [MQTT-3.1.2.3]
+        -orig-id: Connect Flags
       - id: keep_alive
         type: u2
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045 [MQTT-3.1.2.10]
+        -orig-id: Keep Alive
       - id: properties_len
         type: mqtt_varint
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901047 [MQTT-3.1.2.11.1]
+        -orig-id: Property Length
       - id: properties
         type: mqtt_properties
         size: properties_len.val
@@ -139,22 +165,35 @@ types:
           expr: '_._io.eof'
       - id: will_topic
         type: mqtt_utf8_string
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069 [MQTT-3.1.3.3]
+        -orig-id: Will Topic
       - id: will_payload
         type: mqtt_bin_data
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070 [MQTT-3.1.3.4]
+        -orig-id: Will Payload
   mqtt_connect_payload:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901058 [MQTT-3.1.3]
+    -orig-id: Connect Payload
     seq:
       - id: client_id
         type: mqtt_utf8_string
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901059 [MQTT-3.1.3.1]
+        -orig-id: Client Identifier (ClientID)
       - id: will_data
         type: mqtt_will_data
         if: _parent.var_hdr.connect_flags.will
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901060 [MQTT-3.1.3.2]
+        -orig-id: Will Properties
       - id: user_name
         type: mqtt_utf8_string
         if: _parent.var_hdr.connect_flags.user_name
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071 [MQTT-3.1.3.5]
+        -orig-id: User Name
       - id: password
         type: mqtt_bin_data
         if: _parent.var_hdr.connect_flags.password
+        doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072 [MQTT-3.1.3.6]
+        -orig-id: Password
   mqtt_connect_fixed_hdr:
     seq:
       - id: cpt
