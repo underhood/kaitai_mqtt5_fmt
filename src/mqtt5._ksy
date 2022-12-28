@@ -73,14 +73,18 @@ types:
         -orig-id: PINGREQ Fixed Header
       - id: reserved
         type: b4
+#ifndef LENIENT
         valid:
           eq: 0
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
         -orig-id: PINGREQ Fixed Header
       - id: rem_length
         type: mqtt_varint
+#ifndef LENIENT
         valid:
           expr: '_.val == 0'
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901196 [MQTT-3.12.1]
         -orig-id: PINGREQ Fixed Header
   mqtt_pingresp:
@@ -95,14 +99,18 @@ types:
         -orig-id: PINGRESP Fixed Header
       - id: reserved
         type: b4
+#ifndef LENIENT
         valid:
           eq: 0
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901201 [MQTT-3.13.1]
         -orig-id: PINGRESP Fixed Header
       - id: rem_length
         type: mqtt_varint
+#ifndef LENIENT
         valid:
           expr: '_.val == 0'
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901201 [MQTT-3.13.1]
         -orig-id: PINGRESP Fixed Header
 
@@ -125,15 +133,19 @@ types:
         -orig-id: Will Retain
       - id: will_qos
         type: b2
+#ifndef LENIENT
         valid:
           max: 2
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041 [MQTT-3.1.2.6]
         -orig-id: Will QoS
       - id: will
         type: b1
+#ifndef LENIENT
         valid:
           expr: '_ or (_ == false and will_qos == 0)'
 #          -expr-ref: [MQTT-3.1.2-11] and [MQTT-3.1.2-12]
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901040 [MQTT-3.1.2.5]
         -orig-id: Will Flag
       - id: clean_start
@@ -142,8 +154,10 @@ types:
         -orig-id: Clean Start
       - id: reserved
         type: b1
+#ifndef LENIENT
         valid:
           eq: false
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901038 [MQTT-2.1.2-3]
         -orig-id: Reserved
   mqtt_connect_variable_hdr:
@@ -154,8 +168,10 @@ types:
         -orig-id: Protocol Name
       - id: protocol_version
         type: u1
+#ifndef LENIENT
         valid:
           eq: 0x05
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901037 [MQTT-3.1.2.2]
         -orig-id: Protocol Version
       - id: connect_flags
@@ -173,8 +189,10 @@ types:
       - id: properties
         type: mqtt_properties
         size: properties_len.val
+#ifndef LENIENT
         valid:
           expr: '_._io.eof'
+#endif
   mqtt_will_data:
     seq:
       - id: will_prop_len
@@ -183,8 +201,10 @@ types:
         type: mqtt_properties
         size: will_prop_len.val
         if: will_prop_len.val > 0
+#ifndef LENIENT
         valid:
           expr: '_._io.eof'
+#endif
       - id: will_topic
         type: mqtt_utf8_string
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069 [MQTT-3.1.3.3]
@@ -225,12 +245,16 @@ types:
         enum: mqtt_cpt_enum
       - id: reserved
         type: b4
+#ifndef LENIENT
         valid:
           eq: 0
+#endif
       - id: rem_length
         type: mqtt_varint
+#ifndef LENIENT
         valid:
           expr: '_.val != 0'
+#endif
   mqtt_connect_body:
     seq:
       - id: var_hdr
@@ -244,8 +268,10 @@ types:
       - id: body
         type: mqtt_connect_body
         size: fixed_hdr.rem_length.val
+#ifndef LENIENT
         valid:
           expr: '_._io.eof'
+#endif
 
   mqtt_connack_fixed_hdr:
     doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901075 [MQTT-3.2.1]
@@ -257,8 +283,10 @@ types:
           eq: 0x2
       - id: reserved
         type: b4
+#ifndef LENIENT
         valid:
           eq: 0
+#endif
       - id: rem_length
         type: mqtt_varint
   mqtt_connack_body:
@@ -267,8 +295,10 @@ types:
     seq:
       - id: reserved
         type: b7
+#ifndef LENIENT
         valid:
           eq: 0
+#endif
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901077 [MQTT-3.2.2.1]
         -orig-id: Connect Acknowledge Flags
       - id: session_present
@@ -342,12 +372,14 @@ types:
         type: u1
         repeat: until
         repeat-until: '(_ & (1 << 7)) == 0'
+#ifndef LENIENT
         valid:
 # MQTT spec allows max 4 bytes even though unlimited is teoretically possible
           expr: '(bytes.size <= 4)
           and (val <= 127 ? bytes.size == 1 :
             (val <= 16383 ? bytes.size == 2 :
               (val <= 2097151 ? bytes.size == 3 : bytes.size == 4)))'
+#endif
     instances:
       val:
         value: '(bytes[0] & 0x7F)
