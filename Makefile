@@ -9,7 +9,7 @@ dist_archive = kaitai_mqtt5_fmt.tar.gz
 
 macro_processor_files = $(src_dir)/m5.rb
 macro_processor = $(src_dir)/m5.rb
-src_ksy_files = $(src_dir)/mqtt5._ksy
+src_ksy_files = $(src_dir)/mqtt5.ksy.in
 generated_ksy_files = $(build_dir)/mqtt5.ksy $(build_dir)/mqtt5_lenient.ksy
 distributed_ksy_files = $(dist_dir)/mqtt5.ksy $(dist_dir)/mqtt5_lenient.ksy
 generated_ruby_parser_files = $(build_dir)/mqtt5.rb
