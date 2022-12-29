@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 IFNDEF = '#ifndef'
 IFDEF  = '#ifdef'
 ENDIF = '#endif'
