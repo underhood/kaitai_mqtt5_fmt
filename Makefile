@@ -1,33 +1,49 @@
-# this makefile is to build tests only
+ksy_compiler = kaitai-struct-compiler
 
-tests: build/mqtt5.rb
+build_dir = build
+src_dir = src
+test_dir = tests
+dist_dir = dist
 
-build/mqtt5.ksy: src/mqtt5._ksy
-	cat src/mqtt5._ksy | ruby src/m5.rb > build/mqtt5.ksy
+dist_archive = kaitai_mqtt5_fmt.tar.gz
 
-build/mqtt5_lenient.ksy: src/mqtt5._ksy
-	cat src/mqtt5._ksy | ruby src/m5.rb -DLENIENT > build/mqtt5_lenient.ksy
+macro_processor_files = $(src_dir)/m5.rb
+macro_processor = $(src_dir)/m5.rb
+src_ksy_files = $(src_dir)/mqtt5._ksy
+generated_ksy_files = $(build_dir)/mqtt5.ksy $(build_dir)/mqtt5_lenient.ksy
+distributed_ksy_files = $(dist_dir)/mqtt5.ksy $(dist_dir)/mqtt5_lenient.ksy
+generated_ruby_parser_files = $(build_dir)/mqtt5.rb
+test_files = $(test_dir)/test.rb
+ksy_common_build_deps = $(src_ksy_files) $(macro_processor_files)
 
-build/mqtt5.rb: build/mqtt5.ksy build/mqtt5_lenient.ksy
-	kaitai-struct-compiler --outdir build -t ruby build/mqtt5.ksy
+# Rules to generate target .ksy files from template
+ksy: $(generated_ksy_files)
+
+$(build_dir)/mqtt5.ksy: $(ksy_common_build_deps)
+	cat $< | $(macro_processor) > $@
+
+$(build_dir)/mqtt5_lenient.ksy: $(ksy_common_build_deps)
+	cat $< | $(macro_processor) -DLENIENT > $@
+
+# Rules to build all the tests
+tests: $(generated_ruby_parser_files) $(test_files)
+
+$(build_dir)/mqtt5.rb: $(generated_ksy_files)
+	$(ksy_compiler) --outdir $(build_dir) -t ruby $(build_dir)/mqtt5.ksy
+
+# Rules to generate dist file
+$(dist_dir)/%.ksy: $(build_dir)/%.ksy
+	mkdir -p $(dist_dir)
+	cp $< $@
+
+$(dist_archive): $(distributed_ksy_files)
+	tar -C $(shell pwd)/$(dist_dir) -zcf $(dist_archive) .
+
+dist: $(dist_archive)
+
+all: ksy tests dist
 
 clean:
-	rm -f build/*.rb
-	rm -f build/*.ksy
-	rm -rf dist
-	rm -f kaitai_mqtt5_fmt.tar.gz
-
-dist/mqtt5.ksy: build/mqtt5.ksy
-	mkdir -p dist
-	cp build/mqtt5.ksy dist/mqtt5.ksy
-
-dist/mqtt5_lenient.ksy: build/mqtt5_lenient.ksy
-	mkdir -p dist
-	cp build/mqtt5_lenient.ksy dist/mqtt5_lenient.ksy
-
-kaitai_mqtt5_fmt.tar.gz: dist/mqtt5.ksy dist/mqtt5_lenient.ksy
-	tar -C $(shell pwd)/dist -zcvf kaitai_mqtt5_fmt.tar.gz .
-
-dist: kaitai_mqtt5_fmt.tar.gz
-
-all: tests dist
+	rm -f $(generated_ruby_parser_files) $(generated_ksy_files)
+	rm -f $(distributed_ksy_files)
+	rm -f $(dist_archive)
