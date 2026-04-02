@@ -163,7 +163,7 @@ types:
   mqtt_connect_variable_hdr:
     seq:
       - id: protocol_name
-        contents: [ 0x00, 0x03, M, Q, T, T ]
+        contents: [ 0x00, 0x04, M, Q, T, T ]
         doc-ref: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901036 [MQTT-3.1.2.1]
         -orig-id: Protocol Name
       - id: protocol_version
